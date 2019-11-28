@@ -1,9 +1,15 @@
 import React from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 class UsersCreate extends React.Component {
     constructor(props){
         super(props)
+
+        this.state = {
+            email: "",
+            password: "",
+        }
     }
 
     handleChange = event => {
@@ -16,7 +22,15 @@ class UsersCreate extends React.Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        
+        axios.post('/api/register', {
+            email: this.state.email,
+            password: this.state.password,
+        }, {
+            headers: {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            console.log(res);
+        })
     }
 
     render(){

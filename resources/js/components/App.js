@@ -19,6 +19,7 @@ class App extends React.Component {
         role: "",
         isLog: false,
         email: "",
+        role: "",
         token: ""
       }
     }
@@ -26,7 +27,6 @@ class App extends React.Component {
 
 
   redirect = () => {
-    console.log(this.state.user);
     if(!this.state.user.isLog){
       return (
         <>
@@ -41,10 +41,10 @@ class App extends React.Component {
         <>
           <Redirect to="/users" />
           <Route path="/users/create">
-            <UsersCreate />
+            <UsersCreate user={this.state.user} />
           </Route>
           <Route path="/users">
-            <Users />
+            <Users user={this.state.user} />
           </Route>
         </>
       )
@@ -67,12 +67,14 @@ class App extends React.Component {
     
   }
 
-  getUser = (email, token) => {
+  getUser = (email, token, id, role) => {
     this.setState({
       user: {
         isLog: true,
         email: email,
+        role: role,
         token: token,
+        id: id
       }
     })
   } 

@@ -7,7 +7,7 @@ class WallEdit extends React.Component {
 
         this.state = {
             wall: {
-                background: "http://localhost:3000/bg.JPG",
+                background: "/images/bg.JPG",
                 name: "Titre du mur",
                 contact: "Envoyez vos SMS au 0498 75 92 26",
                 messages: [

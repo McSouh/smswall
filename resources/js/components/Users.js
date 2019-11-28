@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Link } from "react-router-dom";
 
 class Users extends React.Component {
@@ -6,37 +7,38 @@ class Users extends React.Component {
         super(props)
 
         this.state = {
-            users: [
-                {
-                    id: 2,
-                    email: "maxime.herbiet@gmail.com"
-                },
-                {
-                    id: 4,
-                    email: "maxime@molengeek.com"
-                },
-                {
-                    id: 5,
-                    email: "elias@molengeek.com"
-                },
-                {
-                    id: 8,
-                    email: "nicolas@molengeek.com"
-                },
-                {
-                    id: 12,
-                    email: "maxime.herbiet@hotmail.com"
-                },
-            ]
+            users: []
         }
+    }
+    componentDidMount(){
+        axios.get('api/users', {
+            headers: {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            this.setState({
+                users: res.data
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     delete = (index, id) => {
 
         let users = this.state.users;
-        users.splice(index, 1)
-        this.setState({
-            users: users
+        axios.delete(`api/users/${id}`, {
+            headers: {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            console.log(res.data);
+            users.splice(index, 1)
+            this.setState({
+                users: users
+            })
+        })
+        .catch(err => {
+            console.log(err);
         })
     }
 

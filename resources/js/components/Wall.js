@@ -10,7 +10,7 @@ class Wall extends React.Component {
         this.state= {
             isFull: false,
             wall: {
-                background: "http://localhost:3000/bg.JPG",
+                background: "/images/bg.JPG",
                 name: "Titre du mur",
                 contact: "Envoyez vos SMS au 0498 75 92 26",
                 messages: [
@@ -44,7 +44,6 @@ class Wall extends React.Component {
                 enabled={this.state.isFull}
                 onChange={isFull => this.setState({isFull})}
                 >
-                {/* ALERT TO DO */}
                 <div style={{height: "100vh",backgroundImage: `url(${this.state.wall.background})`, backgroundSize: "cover", backgroundPosition: "center"}} className="bg-light w-100 d-flex align-items-center flex-column">
                     <h1 style={{textShadow: '0 0 2px black'}} className="mt-4 text-light">{this.state.wall.name}</h1>
                     <h3 style={{textShadow: '0 0 2px black'}} className="text-light text-center">{this.state.wall.contact}</h3>
