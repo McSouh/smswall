@@ -25,6 +25,18 @@ class App extends React.Component {
     }
   }
 
+  reload = () => {
+    let user = this.state.user;
+    user.isLog = false;
+    this.setState({
+      user: user
+    })
+    user.isLog = true;
+    this.setState({
+      user: user
+    })
+  }
+
 
   redirect = () => {
     if(!this.state.user.isLog){
@@ -41,7 +53,7 @@ class App extends React.Component {
         <>
           <Redirect to="/users" />
           <Route path="/users/create">
-            <UsersCreate user={this.state.user} />
+            <UsersCreate reload={this.reload} user={this.state.user} />
           </Route>
           <Route path="/users">
             <Users user={this.state.user} />
@@ -53,13 +65,13 @@ class App extends React.Component {
         <>
           <Redirect to="/wall" />
           <Route path="/wall/messages">
-            <Messages />
+            <Messages user={this.state.user} />
           </Route>
           <Route path="/wall/edit">
-            <WallEdit />
+            <WallEdit reload={this.reload} user={this.state.user} />
           </Route>
           <Route path="/wall">
-            <Wall />
+            <Wall user={this.state.user} />
           </Route>
         </>
       )

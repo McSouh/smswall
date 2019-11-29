@@ -2,6 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Fullscreen from "react-full-screen";
 import Alert from './Alert';
+import axios from 'axios';
+
+
 
 
 class Wall extends React.Component {
@@ -10,8 +13,8 @@ class Wall extends React.Component {
         this.state= {
             isFull: false,
             wall: {
-                background: "/images/bg.JPG",
-                name: "Titre du mur",
+                image: "/images/bg.JPG",
+                title: "Titre du mur",
                 contact: "Envoyez vos SMS au 0498 75 92 26",
                 messages: [
                     'Coucou',
@@ -27,11 +30,26 @@ class Wall extends React.Component {
         }
     }
 
+
+
     componentDidMount(){
-        document.querySelector("#modal").click();
-        setTimeout( () => {
-            document.querySelector("#modal").click();            
-        }, 3000);
+        axios.get(`api/wall/${this.props.user.id}`, {
+            headers: {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            console.log(res);
+            let wall = this.state.wall;
+            res.data.image ? wall.image = res.data.image : null;
+            res.data.title ? wall.title = res.data.title : null;
+            res.data.contact ? wall.contact = res.data.contact : null;
+            this.setState({
+                wall: wall
+            })
+        })
+        // document.querySelector("#modal").click();
+        // setTimeout( () => {
+        //     document.querySelector("#modal").click();            
+        // }, 3000);
     }
 
     goFull = () => {
@@ -44,8 +62,8 @@ class Wall extends React.Component {
                 enabled={this.state.isFull}
                 onChange={isFull => this.setState({isFull})}
                 >
-                <div style={{height: "100vh",backgroundImage: `url(${this.state.wall.background})`, backgroundSize: "cover", backgroundPosition: "center"}} className="bg-light w-100 d-flex align-items-center flex-column">
-                    <h1 style={{textShadow: '0 0 2px black'}} className="mt-4 text-light">{this.state.wall.name}</h1>
+                <div style={{height: "100vh",backgroundImage: `url(${this.state.wall.image})`, backgroundSize: "cover", backgroundPosition: "center"}} className="bg-light w-100 d-flex align-items-center flex-column">
+                    <h1 style={{textShadow: '0 0 2px black'}} className="mt-4 text-light">{this.state.wall.title}</h1>
                     <h3 style={{textShadow: '0 0 2px black'}} className="text-light text-center">{this.state.wall.contact}</h3>
                         <div className={`my-3 ${this.state.isFull && "d-none"}`}>
                         <button className="btn btn-success mx-2" onClick={this.goFull}>

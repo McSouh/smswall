@@ -73325,6 +73325,21 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this, props));
 
+    _this.reload = function () {
+      var user = _this.state.user;
+      user.isLog = false;
+
+      _this.setState({
+        user: user
+      });
+
+      user.isLog = true;
+
+      _this.setState({
+        user: user
+      });
+    };
+
     _this.redirect = function () {
       if (!_this.state.user.isLog) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Redirect"], {
@@ -73340,6 +73355,7 @@ function (_React$Component) {
         }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
           path: "/users/create"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_UsersCreate__WEBPACK_IMPORTED_MODULE_8__["default"], {
+          reload: _this.reload,
           user: _this.state.user
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
           path: "/users"
@@ -73351,11 +73367,18 @@ function (_React$Component) {
           to: "/wall"
         }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
           path: "/wall/messages"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Messages__WEBPACK_IMPORTED_MODULE_7__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Messages__WEBPACK_IMPORTED_MODULE_7__["default"], {
+          user: _this.state.user
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
           path: "/wall/edit"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_WallEdit__WEBPACK_IMPORTED_MODULE_6__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_WallEdit__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          reload: _this.reload,
+          user: _this.state.user
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
           path: "/wall"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Wall__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Wall__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          user: _this.state.user
+        })));
       }
     };
 
@@ -73708,7 +73731,6 @@ function (_React$Component) {
           'Authorization': "Bearer ".concat(_this.props.user.token)
         }
       }).then(function (res) {
-        console.log(res.data);
         users.splice(index, 1);
 
         _this.setState({
@@ -73854,6 +73876,8 @@ function (_React$Component) {
         }
       }).then(function (res) {
         console.log(res);
+
+        _this.props.reload();
       });
     };
 
@@ -73929,6 +73953,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_full_screen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-full-screen */ "./node_modules/react-full-screen/dist/index.js");
 /* harmony import */ var react_full_screen__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_full_screen__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _Alert__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Alert */ "./resources/js/components/Alert.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -73946,6 +73972,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -73973,8 +74000,8 @@ function (_React$Component) {
     _this.state = {
       isFull: false,
       wall: {
-        background: "/images/bg.JPG",
-        name: "Titre du mur",
+        image: "/images/bg.JPG",
+        title: "Titre du mur",
         contact: "Envoyez vos SMS au 0498 75 92 26",
         messages: ['Coucou', 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet ', 'Ohh waaaaawwww ! ! !', 'LOREM IPSUMMMMMM dolor sit amet dolor sit amet  LOREM WAW dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet', 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet', 'Ohh waaaaawwww ! ! !', 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet'],
         alert: "WAW INFO IMPORTANTE DE LA MORT QUI TUE,WAW INFO IMPORTANTE DE LA MORT QUI TUE"
@@ -73986,27 +74013,43 @@ function (_React$Component) {
   _createClass(Wall, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      document.querySelector("#modal").click();
-      setTimeout(function () {
-        document.querySelector("#modal").click();
-      }, 3000);
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_4___default.a.get("api/wall/".concat(this.props.user.id), {
+        headers: {
+          'Authorization': "Bearer ".concat(this.props.user.token)
+        }
+      }).then(function (res) {
+        console.log(res);
+        var wall = _this2.state.wall;
+        res.data.image ? wall.image = res.data.image : null;
+        res.data.title ? wall.title = res.data.title : null;
+        res.data.contact ? wall.contact = res.data.contact : null;
+
+        _this2.setState({
+          wall: wall
+        });
+      }); // document.querySelector("#modal").click();
+      // setTimeout( () => {
+      //     document.querySelector("#modal").click();            
+      // }, 3000);
     }
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_full_screen__WEBPACK_IMPORTED_MODULE_2___default.a, {
         enabled: this.state.isFull,
         onChange: function onChange(isFull) {
-          return _this2.setState({
+          return _this3.setState({
             isFull: isFull
           });
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
           height: "100vh",
-          backgroundImage: "url(".concat(this.state.wall.background, ")"),
+          backgroundImage: "url(".concat(this.state.wall.image, ")"),
           backgroundSize: "cover",
           backgroundPosition: "center"
         },
@@ -74016,7 +74059,7 @@ function (_React$Component) {
           textShadow: '0 0 2px black'
         },
         className: "mt-4 text-light"
-      }, this.state.wall.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", {
+      }, this.state.wall.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", {
         style: {
           textShadow: '0 0 2px black'
         },
@@ -74069,8 +74112,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -74104,22 +74145,70 @@ function (_React$Component) {
 
     _this.handleChange = function (event) {
       event.preventDefault();
+      var wall = _this.state.wall;
+      wall[event.target.name] = event.target.value;
 
-      _this.setState(_defineProperty({}, event.target.name, event.target.value));
+      _this.setState({
+        wall: wall
+      });
+
+      if (event.target.name == "image") {
+        var reader = new FileReader();
+        reader.addEventListener("load", function () {
+          _this.setState({
+            preview: reader.result
+          });
+        }, false);
+        reader.readAsDataURL(event.target.files[0]);
+      }
+    };
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      axios.post("/api/wall/".concat(_this.props.user.id), _this.state.wall, {
+        headers: {
+          'Authorization': "Bearer ".concat(_this.props.user.token)
+        }
+      }).then(function (res) {
+        console.log(res);
+
+        _this.props.reload();
+      });
     };
 
     _this.state = {
       wall: {
-        background: "/images/bg.JPG",
-        name: "Titre du mur",
-        contact: "Envoyez vos SMS au 0498 75 92 26",
-        messages: ['Coucou', 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet ', 'Ohh waaaaawwww ! ! !', 'LOREM IPSUMMMMMM dolor sit amet dolor sit amet  LOREM WAW dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet', 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet', 'Ohh waaaaawwww ! ! !', 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet']
-      }
+        image: "",
+        title: "Titre du mur",
+        contact: "Envoyez vos SMS au 0498 75 92 26"
+      },
+      preview: "/images/bg.JPG"
     };
     return _this;
   }
 
   _createClass(WallEdit, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      axios.get("/api/wall/".concat(this.props.user.id), {
+        headers: {
+          'Authorization': "Bearer ".concat(this.props.user.token)
+        }
+      }).then(function (res) {
+        console.log(res);
+        var wall = _this2.state.wall;
+        res.data.image ? wall.image = res.data.image : null;
+        res.data.title ? wall.title = res.data.title : null;
+        res.data.contact ? wall.contact = res.data.contact : null;
+
+        _this2.setState({
+          wall: wall
+        });
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -74137,17 +74226,17 @@ function (_React$Component) {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         onChange: this.handleChange,
-        defaultValue: this.state.wall.name,
-        name: "name",
+        value: this.state.wall.title,
+        name: "title",
         type: "text",
         className: "form-control w-100",
-        placeholder: "Enter name",
+        placeholder: "Enter title",
         required: true
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         onChange: this.handleChange,
-        defaultValue: this.state.wall.contact,
+        value: this.state.wall.contact,
         name: "contact",
         type: "text",
         className: "form-control w-100",
@@ -74161,11 +74250,11 @@ function (_React$Component) {
           width: "100%",
           backgroundSize: "cover",
           backgroundPosition: 'center',
-          backgroundImage: "url(".concat(this.state.wall.background, ")")
+          backgroundImage: "url(".concat(this.state.preview, ")")
         }
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         onChange: this.handleChange,
-        name: "background",
+        name: "image",
         type: "file",
         className: "form-control w-100"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {

@@ -31,7 +31,6 @@ class Users extends React.Component {
             headers: {'Authorization': `Bearer ${this.props.user.token}`}
         })
         .then(res => {
-            console.log(res.data);
             users.splice(index, 1)
             this.setState({
                 users: users

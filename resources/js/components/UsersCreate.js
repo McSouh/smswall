@@ -30,6 +30,7 @@ class UsersCreate extends React.Component {
         })
         .then(res => {
             console.log(res);
+            this.props.reload();
         })
     }
 

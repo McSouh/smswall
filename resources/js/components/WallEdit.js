@@ -7,27 +7,57 @@ class WallEdit extends React.Component {
 
         this.state = {
             wall: {
-                background: "/images/bg.JPG",
-                name: "Titre du mur",
+                image: "",
+                title: "Titre du mur",
                 contact: "Envoyez vos SMS au 0498 75 92 26",
-                messages: [
-                    'Coucou',
-                    'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet ',
-                    'Ohh waaaaawwww ! ! !',
-                    'LOREM IPSUMMMMMM dolor sit amet dolor sit amet  LOREM WAW dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    'Ohh waaaaawwww ! ! !',
-                    'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                ]
-            }
+            },
+            preview: "/images/bg.JPG"
         }
+    }
+
+    componentDidMount(){
+        axios.get(`/api/wall/${this.props.user.id}`, {
+            headers: {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            console.log(res);
+            let wall = this.state.wall;
+            res.data.image ? wall.image = res.data.image : null;
+            res.data.title ? wall.title = res.data.title : null;
+            res.data.contact ? wall.contact = res.data.contact : null;
+            this.setState({
+                wall: wall
+            })
+        })
     }
 
     handleChange = event => {
         event.preventDefault();
-
+        let wall = this.state.wall;
+        wall[event.target.name] = event.target.value;
         this.setState({
-            [event.target.name]: event.target.value
+            wall: wall
+        })
+        if(event.target.name == "image"){
+            var reader  = new FileReader();
+            reader.addEventListener("load", () => {
+                this.setState({
+                    preview: reader.result
+                })
+              }, false);
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+
+    handleSubmit = event => {
+        event.preventDefault();
+        axios.post(`/api/wall/${this.props.user.id}`, 
+        this.state.wall , {
+            headers : {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            console.log(res);
+            this.props.reload()
         })
     }
 
@@ -37,18 +67,18 @@ class WallEdit extends React.Component {
                 <form onSubmit={this.handleSubmit} className="mt-5 mx-md-5 text-info bg-light p-5 shadow container">
                     <h1>
                         Edit Wall
-                        <Link className="float-right btn btn-info" to="/wall">Back</Link>
+                        <Link className="float-right btn btn-info" to='/wall'>Back</Link>
                     </h1>
                     <div className="form-group">
-                        <input onChange={this.handleChange} defaultValue={this.state.wall.name} name="name" type="text" className="form-control w-100" placeholder="Enter name" required />
+                        <input onChange={this.handleChange} value={this.state.wall.title} name="title" type="text" className="form-control w-100" placeholder="Enter title" required />
                     </div>
                     <div className="form-group">
-                        <input onChange={this.handleChange} defaultValue={this.state.wall.contact} name="contact" type="text" className="form-control w-100" placeholder="Enter contact" required />
+                        <input onChange={this.handleChange} value={this.state.wall.contact} name="contact" type="text" className="form-control w-100" placeholder="Enter contact" required />
                     </div>
                     <div className="form-group">
-                        <div style={{height: "200px", width: "100%", backgroundSize: "cover", backgroundPosition: 'center', backgroundImage: `url(${this.state.wall.background})`}}>
+                        <div style={{height: "200px", width: "100%", backgroundSize: "cover", backgroundPosition: 'center', backgroundImage: `url(${this.state.preview})`}}>
                         </div>
-                        <input onChange={this.handleChange} name="background" type="file" className="form-control w-100" />
+                        <input onChange={this.handleChange} name="image" type="file" className="form-control w-100" />
                     </div>
                     <div className="form-group">
                     <button type="submit" className="form-control btn btn-info">Submit</button>
