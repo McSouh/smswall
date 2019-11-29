@@ -55,7 +55,7 @@ class App extends React.Component {
           <Route path="/users/create">
             <UsersCreate reload={this.reload} user={this.state.user} />
           </Route>
-          <Route path="/users">
+          <Route exact path="/users">
             <Users user={this.state.user} />
           </Route>
         </>
@@ -70,7 +70,7 @@ class App extends React.Component {
           <Route path="/wall/edit">
             <WallEdit reload={this.reload} user={this.state.user} />
           </Route>
-          <Route path="/wall">
+          <Route exact path="/wall">
             <Wall user={this.state.user} />
           </Route>
         </>

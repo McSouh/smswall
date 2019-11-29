@@ -7,7 +7,7 @@ class WallEdit extends React.Component {
 
         this.state = {
             wall: {
-                image: "",
+                image: null,
                 title: "Titre du mur",
                 contact: "Envoyez vos SMS au 0498 75 92 26",
             },
@@ -22,11 +22,13 @@ class WallEdit extends React.Component {
         .then(res => {
             console.log(res);
             let wall = this.state.wall;
-            res.data.image ? wall.image = res.data.image : null;
+            let preview;
+            res.data.image ? preview = res.data.image : null;
             res.data.title ? wall.title = res.data.title : null;
             res.data.contact ? wall.contact = res.data.contact : null;
             this.setState({
-                wall: wall
+                wall: wall,
+                preview: preview
             })
         })
     }
@@ -35,9 +37,6 @@ class WallEdit extends React.Component {
         event.preventDefault();
         let wall = this.state.wall;
         wall[event.target.name] = event.target.value;
-        this.setState({
-            wall: wall
-        })
         if(event.target.name == "image"){
             var reader  = new FileReader();
             reader.addEventListener("load", () => {
@@ -46,14 +45,28 @@ class WallEdit extends React.Component {
                 })
               }, false);
             reader.readAsDataURL(event.target.files[0]);
+            wall.image = event.target.files[0]
         }
+        this.setState({
+            wall: wall
+        })
     }
 
     handleSubmit = event => {
         event.preventDefault();
+        
+        let wall = new FormData();
+        wall.append('title', this.state.wall.title)
+        wall.append('contact', this.state.wall.contact)
+        this.state.wall.image ? wall.append('image', this.state.wall.image) : null;
+        
+        
         axios.post(`/api/wall/${this.props.user.id}`, 
-        this.state.wall , {
-            headers : {'Authorization': `Bearer ${this.props.user.token}`}
+        wall , {
+            headers : {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${this.props.user.token}`
+            }
         })
         .then(res => {
             console.log(res);
@@ -64,7 +77,7 @@ class WallEdit extends React.Component {
     render(){
         return (
             <div style={{height: "100vh"}} className="bg-dark w-100 d-flex align-items-center flex-column">
-                <form onSubmit={this.handleSubmit} className="mt-5 mx-md-5 text-info bg-light p-5 shadow container">
+                <form onSubmit={this.handleSubmit} className="mt-5 mx-md-5 text-info bg-light p-5 shadow container" encType="multipart/form-data">
                     <h1>
                         Edit Wall
                         <Link className="float-right btn btn-info" to='/wall'>Back</Link>

@@ -67495,7 +67495,7 @@ if (false) {} else {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
+/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -73358,6 +73358,7 @@ function (_React$Component) {
           reload: _this.reload,
           user: _this.state.user
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+          exact: true,
           path: "/users"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Users__WEBPACK_IMPORTED_MODULE_5__["default"], {
           user: _this.state.user
@@ -73375,6 +73376,7 @@ function (_React$Component) {
           reload: _this.reload,
           user: _this.state.user
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+          exact: true,
           path: "/wall"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Wall__WEBPACK_IMPORTED_MODULE_4__["default"], {
           user: _this.state.user
@@ -74148,10 +74150,6 @@ function (_React$Component) {
       var wall = _this.state.wall;
       wall[event.target.name] = event.target.value;
 
-      _this.setState({
-        wall: wall
-      });
-
       if (event.target.name == "image") {
         var reader = new FileReader();
         reader.addEventListener("load", function () {
@@ -74160,13 +74158,23 @@ function (_React$Component) {
           });
         }, false);
         reader.readAsDataURL(event.target.files[0]);
+        wall.image = event.target.files[0];
       }
+
+      _this.setState({
+        wall: wall
+      });
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      axios.post("/api/wall/".concat(_this.props.user.id), _this.state.wall, {
+      var wall = new FormData();
+      wall.append('title', _this.state.wall.title);
+      wall.append('contact', _this.state.wall.contact);
+      _this.state.wall.image ? wall.append('image', _this.state.wall.image) : null;
+      axios.post("/api/wall/".concat(_this.props.user.id), wall, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           'Authorization': "Bearer ".concat(_this.props.user.token)
         }
       }).then(function (res) {
@@ -74178,7 +74186,7 @@ function (_React$Component) {
 
     _this.state = {
       wall: {
-        image: "",
+        image: null,
         title: "Titre du mur",
         contact: "Envoyez vos SMS au 0498 75 92 26"
       },
@@ -74199,12 +74207,14 @@ function (_React$Component) {
       }).then(function (res) {
         console.log(res);
         var wall = _this2.state.wall;
-        res.data.image ? wall.image = res.data.image : null;
+        var preview;
+        res.data.image ? preview = res.data.image : null;
         res.data.title ? wall.title = res.data.title : null;
         res.data.contact ? wall.contact = res.data.contact : null;
 
         _this2.setState({
-          wall: wall
+          wall: wall,
+          preview: preview
         });
       });
     }
@@ -74218,7 +74228,8 @@ function (_React$Component) {
         className: "bg-dark w-100 d-flex align-items-center flex-column"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
         onSubmit: this.handleSubmit,
-        className: "mt-5 mx-md-5 text-info bg-light p-5 shadow container"
+        className: "mt-5 mx-md-5 text-info bg-light p-5 shadow container",
+        encType: "multipart/form-data"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Edit Wall", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
         className: "float-right btn btn-info",
         to: "/wall"
