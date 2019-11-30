@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import Fullscreen from "react-full-screen";
 import Alert from './Alert';
 import axios from 'axios';
+import Echo from 'laravel-echo';
+import Envoi from './Envoi';
+window.Pusher = require('pusher-js');
 
 
 
@@ -16,17 +19,9 @@ class Wall extends React.Component {
                 image: "/images/bg.JPG",
                 title: "Titre du mur",
                 contact: "Envoyez vos SMS au 0498 75 92 26",
-                messages: [
-                    'Coucou',
-                    'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet ',
-                    'Ohh waaaaawwww ! ! !',
-                    'LOREM IPSUMMMMMM dolor sit amet dolor sit amet  LOREM WAW dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    'Ohh waaaaawwww ! ! !',
-                    'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                ],
-                alert: "WAW INFO IMPORTANTE DE LA MORT QUI TUE,WAW INFO IMPORTANTE DE LA MORT QUI TUE"
-            }
+            },
+            alert: "",
+            messages: [],
         }
     }
 
@@ -37,7 +32,6 @@ class Wall extends React.Component {
             headers: {'Authorization': `Bearer ${this.props.user.token}`}
         })
         .then(res => {
-            console.log(res);
             let wall = this.state.wall;
             res.data.image ? wall.image = res.data.image : null;
             res.data.title ? wall.title = res.data.title : null;
@@ -46,10 +40,51 @@ class Wall extends React.Component {
                 wall: wall
             })
         })
-        // document.querySelector("#modal").click();
-        // setTimeout( () => {
-        //     document.querySelector("#modal").click();            
-        // }, 3000);
+
+        axios.get(`api/messages`, {
+            headers: {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            this.setState({
+                messages: res.data
+            })
+        })
+
+        
+
+        let echo = new Echo({
+            broadcaster: 'pusher',
+            key: process.env.MIX_PUSHER_APP_KEY,
+            cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+            encrypted: true,
+            auth: {
+                headers: {
+                    Authorization: 'Bearer ' + this.props.user.token
+                },
+            },
+        });
+
+        echo.private(`chat.${this.props.user.id}`)
+        .listen('MessageSent', (e) => {
+            let messages = this.state.messages;
+            messages.push(e.message)
+            this.setState({
+                messages: messages
+            })
+        });
+        echo.private(`alert.${this.props.user.id}`)
+        .listen('AlertSent', (e) => {
+            console.log(e);
+            this.setState({
+                alert: e.alert
+            })
+            document.querySelector("#modal").click();
+            let overlay = document.querySelector(".modal-backdrop");
+            let screen = document.querySelector(".fullscreen");
+            screen.appendChild(overlay.parentNode.removeChild(overlay));
+            
+        });
+
     }
 
     goFull = () => {
@@ -76,11 +111,12 @@ class Wall extends React.Component {
                             Messages
                         </Link>
                         </div>
-                        <Alert alert={this.state.wall.alert} />
+                        {this.state.alert != "" ? <Alert alert={this.state.alert} /> : null}
+                        <Envoi user={this.props.user} />
                     <div className="container">
-                        {this.state.wall.messages.map((el, i) => {
+                        {this.state.messages.map((el, i) => {
                             return (
-                                <p style={{backgroundColor: 'rgb(255, 255, 255, 0.85)'}} className="card w-100 p-2" key={i}>{el}</p>
+                                <p style={{backgroundColor: 'rgb(255, 255, 255, 0.85)'}} className="card w-100 p-2" key={i}>{el.body}</p>
                             )
                         })}
                     </div>

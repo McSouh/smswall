@@ -32,6 +32,9 @@ Route::group(['middleware' => ['json.response']], function () {
         Route::delete('/users/{id}', 'Api\AuthController@destroy');
         Route::get('/wall/{id}', 'WallController@index');
         Route::post('/wall/{id}', 'WallController@update');
+        Route::get('/messages', 'MessageController@fetchMessages');
+        Route::post('/messages', 'MessageController@sendMessage');
+        Route::post('/alert', 'MessageController@sendAlert');
     });
 
 });
