@@ -20,9 +20,8 @@ class WallEdit extends React.Component {
             headers: {'Authorization': `Bearer ${this.props.user.token}`}
         })
         .then(res => {
-            console.log(res);
             let wall = this.state.wall;
-            let preview;
+            let preview = this.state.preview;
             res.data.image ? preview = res.data.image : null;
             res.data.title ? wall.title = res.data.title : null;
             res.data.contact ? wall.contact = res.data.contact : null;

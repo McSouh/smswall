@@ -21,8 +21,19 @@ class Wall extends React.Component {
                 contact: "Envoyez vos SMS au 0498 75 92 26",
             },
             alert: "",
-            messages: [],
+            messages: []
         }
+        this.echo = new Echo({
+            broadcaster: 'pusher',
+            key: process.env.MIX_PUSHER_APP_KEY,
+            cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+            encrypted: true,
+            auth: {
+                headers: {
+                    Authorization: 'Bearer ' + this.props.user.token
+                },
+            },
+        });
     }
 
 
@@ -50,21 +61,7 @@ class Wall extends React.Component {
             })
         })
 
-        
-
-        let echo = new Echo({
-            broadcaster: 'pusher',
-            key: process.env.MIX_PUSHER_APP_KEY,
-            cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-            encrypted: true,
-            auth: {
-                headers: {
-                    Authorization: 'Bearer ' + this.props.user.token
-                },
-            },
-        });
-
-        echo.private(`chat.${this.props.user.id}`)
+        this.echo.private(`chat.${this.props.user.id}`)
         .listen('MessageSent', (e) => {
             let messages = this.state.messages;
             messages.push(e.message)
@@ -72,9 +69,8 @@ class Wall extends React.Component {
                 messages: messages
             })
         });
-        echo.private(`alert.${this.props.user.id}`)
+        this.echo.private(`alert.${this.props.user.id}`)
         .listen('AlertSent', (e) => {
-            console.log(e);
             this.setState({
                 alert: e.alert
             })
@@ -85,6 +81,12 @@ class Wall extends React.Component {
             
         });
 
+    }
+    componentWillUnmount(){
+        this.echo.private(`alert.${this.props.user.id}`)
+        .stopListening('AlertSent')
+        this.echo.private(`chat.${this.props.user.id}`)
+        .stopListening('MessageSent')
     }
 
     goFull = () => {

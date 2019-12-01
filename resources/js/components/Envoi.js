@@ -25,7 +25,6 @@ class Envoi extends React.Component {
             headers: {'Authorization': `Bearer ${this.props.user.token}`}
         })
         .then(res => {
-            console.log(res);
         })
     }
 

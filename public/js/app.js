@@ -83330,9 +83330,7 @@ function (_React$Component) {
         headers: {
           'Authorization': "Bearer ".concat(_this.props.user.token)
         }
-      }).then(function (res) {
-        console.log(res);
-      });
+      }).then(function (res) {});
     };
 
     _this.state = {
@@ -83954,6 +83952,17 @@ function (_React$Component) {
       alert: "",
       messages: []
     };
+    _this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_5__["default"]({
+      broadcaster: 'pusher',
+      key: "b5775432c8bf8c0d56da",
+      cluster: "eu",
+      encrypted: true,
+      auth: {
+        headers: {
+          Authorization: 'Bearer ' + _this.props.user.token
+        }
+      }
+    });
     return _this;
   }
 
@@ -83985,18 +83994,7 @@ function (_React$Component) {
           messages: res.data
         });
       });
-      var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_5__["default"]({
-        broadcaster: 'pusher',
-        key: "b5775432c8bf8c0d56da",
-        cluster: "eu",
-        encrypted: true,
-        auth: {
-          headers: {
-            Authorization: 'Bearer ' + this.props.user.token
-          }
-        }
-      });
-      echo["private"]("chat.".concat(this.props.user.id)).listen('MessageSent', function (e) {
+      this.echo["private"]("chat.".concat(this.props.user.id)).listen('MessageSent', function (e) {
         var messages = _this2.state.messages;
         messages.push(e.message);
 
@@ -84004,9 +84002,7 @@ function (_React$Component) {
           messages: messages
         });
       });
-      echo["private"]("alert.".concat(this.props.user.id)).listen('AlertSent', function (e) {
-        console.log(e);
-
+      this.echo["private"]("alert.".concat(this.props.user.id)).listen('AlertSent', function (e) {
         _this2.setState({
           alert: e.alert
         });
@@ -84016,6 +84012,12 @@ function (_React$Component) {
         var screen = document.querySelector(".fullscreen");
         screen.appendChild(overlay.parentNode.removeChild(overlay));
       });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.echo["private"]("alert.".concat(this.props.user.id)).stopListening('AlertSent');
+      this.echo["private"]("chat.".concat(this.props.user.id)).stopListening('MessageSent');
     }
   }, {
     key: "render",
@@ -84188,9 +84190,8 @@ function (_React$Component) {
           'Authorization': "Bearer ".concat(this.props.user.token)
         }
       }).then(function (res) {
-        console.log(res);
         var wall = _this2.state.wall;
-        var preview;
+        var preview = _this2.state.preview;
         res.data.image ? preview = res.data.image : null;
         res.data.title ? wall.title = res.data.title : null;
         res.data.contact ? wall.contact = res.data.contact : null;
