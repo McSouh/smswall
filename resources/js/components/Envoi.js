@@ -19,8 +19,8 @@ class Envoi extends React.Component {
 
     handleSubmit = () => {
         event.preventDefault();
-        axios.post('api/alert', {
-            alert: this.state.message
+        axios.post('api/messages', {
+            body: this.state.message
         }, {
             headers: {'Authorization': `Bearer ${this.props.user.token}`}
         })

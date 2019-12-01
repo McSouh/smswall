@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 class Messages extends React.Component {
@@ -7,41 +8,23 @@ class Messages extends React.Component {
         super(props)
 
         this.state = {
-            messages: [
-                {
-                    body: 'Coucou',
-                    id: 2
-                },
-                {
-                    body: 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    id: 4
-                },
-                {
-                    body: 'Ohh waaaaawwww ! ! !',
-                    id: 6
-                },
-                {
-                    body: 'LOREM IPSUMMMMMM dolor sit amet dolor sit amet  LOREM WAW dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    id: 9
-                },
-                {
-                    body: 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    id: 13
-                },
-                {
-                    body: 'Ohh waaaaawwww ! ! !',
-                    id: 14
-                },
-                {
-                    body: 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-                    id: 17
-                },
-            ]
+            messages: []
         }
     }
 
-    delete = (index, id) => {
+    componentDidMount(){
+        axios.get(`/api/messages`, {
+            headers: {'Authorization': `Bearer ${this.props.user.token}`}
+        })
+        .then(res => {
+            this.setState({
+                messages: res.data
+            })
+        })
+    }
 
+    delete = (index, id) => {
+        
         let messages = this.state.messages;
         messages.splice(index, 1)
         this.setState({

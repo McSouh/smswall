@@ -7,6 +7,7 @@ class Login extends React.Component {
         this.state = {
             email: "",
             password: "",
+            error: null,
         }
     }
 
@@ -25,6 +26,8 @@ class Login extends React.Component {
             password: this.state.password
         })
         .then(res => {
+            console.log(res);
+            
             this.props.getUser(
                 this.state.email, 
                 res.data.token, 
@@ -32,9 +35,12 @@ class Login extends React.Component {
                 res.data.role);
         })
         .catch(err => {
-            console.log(err);
+            this.setState({
+                error: err.response.data
+            })
         })
     }
+
 
     render(){
         return (
@@ -43,16 +49,19 @@ class Login extends React.Component {
                     <img style={{width: "80%",position: "absolute", top: "-70px", margin: "auto"}} src="/images/WallLogo.png" />
                     <h2>Login</h2>
                     <div className="form-group">
-                        <input onChange={this.handleChange} name="email" type="email" className="form-control w-100" placeholder="Enter email" required />
+                        <input onChange={this.handleChange} name="email" type="email" className={`form-control ${this.state.error === "User does not exist" ? "is-invalid" : ""} w-100`} placeholder="Enter email" required />
+                        <div className="invalid-feedback">
+                            {this.state.error}
+                        </div>
                     </div>
                     <div className="form-group">
-                        <input onChange={this.handleChange} name="password" type="password" className="form-control w-100" placeholder="Password" required />
+                        <input onChange={this.handleChange} name="password" type="password" className={`form-control ${this.state.error === "Password missmatch" ? "is-invalid" : ""} w-100`} placeholder="Password" required />
+                        <div className="invalid-feedback">
+                            {this.state.error}
+                        </div>
                     </div>
                     <div className="form-group">
                     <button type="submit" className="form-control btn btn-info">Submit</button>
-                    <div className="invalid-feedback">
-                        Wrong email or password.
-                    </div>
                     </div>
                 </form>
             </div>

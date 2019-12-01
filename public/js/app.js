@@ -83324,8 +83324,8 @@ function (_React$Component) {
 
     _this.handleSubmit = function () {
       event.preventDefault();
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('api/alert', {
-        alert: _this.state.message
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('api/messages', {
+        body: _this.state.message
       }, {
         headers: {
           'Authorization': "Bearer ".concat(_this.props.user.token)
@@ -83419,15 +83419,20 @@ function (_React$Component) {
         email: _this.state.email,
         password: _this.state.password
       }).then(function (res) {
+        console.log(res);
+
         _this.props.getUser(_this.state.email, res.data.token, res.data.id, res.data.role);
       })["catch"](function (err) {
-        console.log(err);
+        _this.setState({
+          error: err.response.data
+        });
       });
     };
 
     _this.state = {
       email: "",
-      password: ""
+      password: "",
+      error: null
     };
     return _this;
   }
@@ -83460,26 +83465,28 @@ function (_React$Component) {
         onChange: this.handleChange,
         name: "email",
         type: "email",
-        className: "form-control w-100",
+        className: "form-control ".concat(this.state.error === "User does not exist" ? "is-invalid" : "", " w-100"),
         placeholder: "Enter email",
         required: true
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "invalid-feedback"
+      }, this.state.error)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         onChange: this.handleChange,
         name: "password",
         type: "password",
-        className: "form-control w-100",
+        className: "form-control ".concat(this.state.error === "Password missmatch" ? "is-invalid" : "", " w-100"),
         placeholder: "Password",
         required: true
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "invalid-feedback"
+      }, this.state.error)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit",
         className: "form-control btn btn-info"
-      }, "Submit"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "invalid-feedback"
-      }, "Wrong email or password."))));
+      }, "Submit"))));
     }
   }]);
 
@@ -83502,6 +83509,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -83519,6 +83528,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -83545,36 +83555,30 @@ function (_React$Component) {
     };
 
     _this.state = {
-      messages: [{
-        body: 'Coucou',
-        id: 2
-      }, {
-        body: 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-        id: 4
-      }, {
-        body: 'Ohh waaaaawwww ! ! !',
-        id: 6
-      }, {
-        body: 'LOREM IPSUMMMMMM dolor sit amet dolor sit amet  LOREM WAW dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-        id: 9
-      }, {
-        body: 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-        id: 13
-      }, {
-        body: 'Ohh waaaaawwww ! ! !',
-        id: 14
-      }, {
-        body: 'Lorem ipsum dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet dolor sit amet',
-        id: 17
-      }]
+      messages: []
     };
     return _this;
   }
 
   _createClass(Messages, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("/api/messages", {
+        headers: {
+          'Authorization': "Bearer ".concat(this.props.user.token)
+        }
+      }).then(function (res) {
+        _this2.setState({
+          messages: res.data
+        });
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
@@ -83597,7 +83601,7 @@ function (_React$Component) {
           key: i
         }, el.body, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           onClick: function onClick() {
-            return _this2["delete"](i, el.id);
+            return _this3["delete"](i, el.id);
           },
           style: {
             right: "0",
